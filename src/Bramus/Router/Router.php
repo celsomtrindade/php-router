@@ -7,6 +7,8 @@
  */
 namespace Bramus\Router;
 
+use DI\Container;
+
 /**
  * Class Router.
  */
@@ -47,6 +49,10 @@ class Router
      */
     private $namespace = '';
 
+    public function __construct(private Container $container)
+    {
+    }
+
     /**
      * Store a before middleware route and a handling function to be executed when accessed using one of the specified methods.
      *
@@ -59,10 +65,6 @@ class Router
         $pattern = $this->baseRoute . '/' . trim($pattern, '/');
         $pattern = $this->baseRoute ? rtrim($pattern, '/') : $pattern;
 
-        if ($methods === '*') {
-            $methods = 'GET|POST|PUT|DELETE|OPTIONS|PATCH|HEAD';
-        }
-        
         foreach (explode('|', $methods) as $method) {
             $this->beforeRoutes[$method][] = array(
                 'pattern' => $pattern,
@@ -299,8 +301,10 @@ class Router
                 $this->trigger404();
             }
         } // If a route was handled, perform the finish callback (if any)
-        elseif ($callback && is_callable($callback)) {
-            $callback();
+        else {
+            if ($callback && is_callable($callback)) {
+                $callback();
+            }
         }
 
         // If it originally was a HEAD request, clean up after ourselves by emptying the output buffer
@@ -483,7 +487,7 @@ class Router
                     } else {
                         // Make sure we have an instance, because a non-static method must not be called statically
                         if (\is_string($controller)) {
-                            $controller = new $controller();
+                            $controller = $this->container->get($controller);
                         }
                         call_user_func_array(array($controller, $method), $params);
                     }
