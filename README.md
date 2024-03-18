@@ -5,6 +5,13 @@
 A lightweight and simple object oriented PHP Router.
 Built by Bram(us) Van Damme _([https://www.bram.us](https://www.bram.us))_ and [Contributors](https://github.com/bramus/router/graphs/contributors)
 
+## Note
+
+Forked from [Bramus Router](https://github.com/bramus/router) with the following changes:
+
+- Support for PHP-Di Dependency injection container on router, so we can use DI on the constructor;
+- Support for multiple nested route groups;
+- Add route excetion to be thrown to capture route issues, otherwise it returns nothing even with errors;
 
 ## Features
 

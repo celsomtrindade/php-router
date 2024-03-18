@@ -1,15 +1,15 @@
 {
-    "name": "bramus/router",
-    "description": "A lightweight and simple object oriented PHP Router",
+    "name": "celsomtrindade/router",
+    "description": "A lightweight and simple object oriented PHP Router - Forked from Bramus Router",
     "keywords": ["router", "routing"],
-    "homepage": "https://github.com/bramus/router",
+    "homepage": "https://github.com/celsomtrindade/php-router",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Bram(us) Van Damme",
-            "email": "bramus@bram.us",
-            "homepage": "http://www.bram.us"
+            "name": "Celso M Trindade",
+            "email": "celso@agdevision.com.br",
+            "homepage": "https://agdevision.com.br"
         }
     ],
     "require": {
