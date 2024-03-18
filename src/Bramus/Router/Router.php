@@ -498,6 +498,7 @@ class Router
         }
       } catch (\ReflectionException $reflectionException) {
         // The controller class is not available or the class does not have the method $method
+        throw new \Exception($reflectionException->getMessage() ?? 'Route function not found');
       }
     }
   }
