@@ -46,9 +46,9 @@ class Router
   private $serverBasePath;
 
   /**
-   * @var string Default Controllers Namespace
+   * @var array Default Controllers Namespace
    */
-  private $namespace = '';
+  private $namespace = [];
 
   public function __construct(private Container $container)
   {
@@ -70,6 +70,7 @@ class Router
       $this->beforeRoutes[$method][] = array(
         'pattern' => $pattern,
         'fn' => $fn,
+        'baseRoute' => $this->baseRoute,
       );
     }
   }
@@ -90,6 +91,7 @@ class Router
       $this->afterRoutes[$method][] = array(
         'pattern' => $pattern,
         'fn' => $fn,
+        'baseRoute' => $this->baseRoute,
       );
     }
   }
@@ -257,7 +259,7 @@ class Router
   public function setNamespace($namespace)
   {
     if (is_string($namespace)) {
-      $this->namespace = $namespace;
+      $this->namespace[$this->baseRoute] = $namespace;
     }
   }
 
@@ -268,7 +270,7 @@ class Router
    */
   public function getNamespace()
   {
-    return $this->namespace;
+    return $this->namespace[$this->baseRoute];
   }
 
   /**
@@ -448,6 +450,7 @@ class Router
         }, $matches, array_keys($matches));
 
         // Call the handling function with the URL parameters if the desired input is callable
+        $this->baseRoute = $route['baseRoute'];
         $this->invoke($route['fn'], $params);
 
         ++$numHandled;

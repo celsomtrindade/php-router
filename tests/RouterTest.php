@@ -2,6 +2,9 @@
 
 namespace {
 
+    use Bramus\Router\Router;
+    use DI\Container;
+
     class Handler
     {
         public function notfound()
@@ -12,6 +15,11 @@ namespace {
 
     class RouterTest extends PHPUnit_Framework_TestCase
     {
+        private static function getRouterInstance(): Router
+        {
+          return new \Bramus\Router\Router(new Container());
+        }
+
         protected function setUp()
         {
             // Clear SCRIPT_NAME because bramus/router tries to guess the subfolder the script is run in
@@ -31,13 +39,13 @@ namespace {
 
         public function testInit()
         {
-            $this->assertInstanceOf('\Bramus\Router\Router', new \Bramus\Router\Router());
+            $this->assertInstanceOf('\Bramus\Router\Router', self::getRouterInstance());
         }
 
         public function testUri()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->match('GET', '/about', function () {
                 echo 'about';
             });
@@ -55,14 +63,14 @@ namespace {
 
             $this->assertEquals(
                 '/about/whatever',
-                $method->invoke(new \Bramus\Router\Router())
+                $method->invoke(self::getRouterInstance())
             );
         }
 
         public function testBasePathOverride()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->match('GET', '/about', function () {
                 echo 'about';
             });
@@ -91,7 +99,7 @@ namespace {
         public function testBasePathThatContainsEmoji()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->match('GET', '/about', function () {
                 echo 'about';
             });
@@ -112,7 +120,7 @@ namespace {
         public function testStaticRoute()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->match('GET', '/about', function () {
                 echo 'about';
             });
@@ -130,7 +138,7 @@ namespace {
         public function testStaticRouteUsingShorthand()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/about', function () {
                 echo 'about';
             });
@@ -148,7 +156,7 @@ namespace {
         public function testRequestMethods()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/', function () {
                 echo 'get';
             });
@@ -217,7 +225,7 @@ namespace {
         public function testShorthandAll()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->all('/', function () {
                 echo 'all';
             });
@@ -273,7 +281,7 @@ namespace {
         public function testDynamicRoute()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/hello/(\w+)', function ($name) {
                 echo 'Hello ' . $name;
             });
@@ -291,7 +299,7 @@ namespace {
         public function testDynamicRouteWithMultiple()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/hello/(\w+)/(\w+)', function ($name, $lastname) {
                 echo 'Hello ' . $name . ' ' . $lastname;
             });
@@ -309,7 +317,7 @@ namespace {
         public function testCurlyBracesRoutes()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/hello/{name}/{lastname}', function ($name, $lastname) {
                 echo 'Hello ' . $name . ' ' . $lastname;
             });
@@ -327,7 +335,7 @@ namespace {
         public function testCurlyBracesRoutesWithNonAZCharsInPlaceholderNames()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/hello/{arg1}/{arg2}', function ($arg1, $arg2) {
                 echo 'Hello ' . $arg1 . ' ' . $arg2;
             });
@@ -345,7 +353,7 @@ namespace {
         public function testCurlyBracesRoutesWithCyrillicCharactersInPlaceholderNames()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/hello/{това}/{това}', function ($arg1, $arg2) {
                 echo 'Hello ' . $arg1 . ' ' . $arg2;
             });
@@ -363,7 +371,7 @@ namespace {
         public function testCurlyBracesRoutesWithEmojiInPlaceholderNames()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/hello/{😂}/{😅}', function ($arg1, $arg2) {
                 echo 'Hello ' . $arg1 . ' ' . $arg2;
             });
@@ -381,7 +389,7 @@ namespace {
         public function testCurlyBracesWithCyrillicCharacters()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/bg/{arg}', function ($arg) {
                 echo 'BG: ' . $arg;
             });
@@ -399,7 +407,7 @@ namespace {
         public function testCurlyBracesWithMultipleCyrillicCharacters()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/bg/{arg}/{arg}', function ($arg1, $arg2) {
                 echo 'BG: ' . $arg1 . ' - ' . $arg2;
             });
@@ -417,7 +425,7 @@ namespace {
         public function testCurlyBracesWithEmoji()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/emoji/{emoji}', function ($emoji) {
                 echo 'Emoji: ' . $emoji;
             });
@@ -435,7 +443,7 @@ namespace {
         public function testCurlyBracesWithEmojiCombinedWithBasePathThatContainsEmoji()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/emoji/{emoji}', function ($emoji) {
                 echo 'Emoji: ' . $emoji;
             });
@@ -456,7 +464,7 @@ namespace {
         public function testDynamicRouteWithOptionalSubpatterns()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/hello(/\w+)?', function ($name = null) {
                 echo 'Hello ' . (($name) ? $name : 'stranger');
             });
@@ -480,7 +488,7 @@ namespace {
         public function testDynamicRouteWithMultipleSubpatterns()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/(.*)/page([0-9]+)', function ($place, $page) {
                 echo 'Hello ' . $place . ' page : ' . $page;
             });
@@ -498,7 +506,7 @@ namespace {
         public function testDynamicRouteWithOptionalNestedSubpatterns()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/blog(/\d{4}(/\d{2}(/\d{2}(/[a-z0-9_-]+)?)?)?)?', function ($year = null, $month = null, $day = null, $slug = null) {
                 if ($year === null) {
                     echo 'Blog overview';
@@ -560,7 +568,7 @@ namespace {
         public function testDynamicRouteWithNestedOptionalSubpatterns()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/hello(/\w+(/\w+)?)?', function ($name1 = null, $name2 = null) {
                 echo 'Hello ' . (($name1) ? $name1 : 'stranger') . ' ' . (($name2) ? $name2 : 'stranger');
             });
@@ -584,7 +592,7 @@ namespace {
         public function testDynamicRouteWithWildcard()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('(.*)', function ($name) {
                 echo 'Hello ' . $name;
             });
@@ -602,7 +610,7 @@ namespace {
         public function testDynamicRouteWithPartialWildcard()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/hello/(.*)', function ($name) {
                 echo 'Hello ' . $name;
             });
@@ -620,7 +628,7 @@ namespace {
         public function test404()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/', function () {
                 echo 'home';
             });
@@ -657,7 +665,7 @@ namespace {
         public function test404WithClassAtMethod()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/', function () {
                 echo 'home';
             });
@@ -683,7 +691,7 @@ namespace {
         public function test404WithClassAtStaticMethod()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/', function () {
                 echo 'home';
             });
@@ -709,7 +717,7 @@ namespace {
         public function test404WithManualTrigger()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/', function() use ($router) {
                 $router->trigger404();
             });
@@ -730,7 +738,7 @@ namespace {
         public function testBeforeRouterMiddleware()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->before('GET|POST', '/.*', function () {
                 echo 'before ';
             });
@@ -779,7 +787,7 @@ namespace {
         public function testAfterRouterMiddleware()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/', function () {
                 echo 'home';
             });
@@ -798,7 +806,7 @@ namespace {
 
         public function testBasicController()
         {
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
 
             $router->get('/show/(.*)', 'RouterTestController@show');
 
@@ -814,7 +822,7 @@ namespace {
 
         public function testDefaultNamespace()
         {
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
 
             $router->setNamespace('\Hello');
 
@@ -833,7 +841,7 @@ namespace {
         public function testSubfolders()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/', function () {
                 echo 'home';
             });
@@ -852,7 +860,7 @@ namespace {
         public function testSubrouteMouting()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->mount('/movies', function () use ($router) {
                 $router->get('/', function () {
                     echo 'overview';
@@ -878,6 +886,42 @@ namespace {
             ob_end_clean();
         }
 
+        public function testNamespaceWithMouting()
+        {
+            $router = self::getRouterInstance();
+
+            $router->mount('/show', function () use ($router) {
+                $router->setNamespace('\Hello');
+                $router->get('/without/(.*)', 'HelloRouterTestController@show');
+
+                $router->mount('/folder', function () use ($router) {
+                    $router->setNamespace('\Hello\Folder');
+                    $router->get('/(.*)', 'HelloFolderRouterTestController@show');
+
+                });
+            });
+
+            $router->get('/anything/(.*)', 'Hello\HelloRouterTestController@show');
+
+            ob_start();
+            $_SERVER['REQUEST_URI'] = '/show/without/foo';
+            $router->run();
+            $this->assertEquals('foo', ob_get_contents());
+
+            ob_clean();
+            $_SERVER['REQUEST_URI'] = '/show/folder/foo';
+            $router->run();
+            $this->assertEquals('foo', ob_get_contents());
+
+            ob_clean();
+            $_SERVER['REQUEST_URI'] = '/anything/foo';
+            $router->run();
+            $this->assertEquals('foo', ob_get_contents());
+
+            // cleanup
+            ob_end_clean();
+        }
+
         public function testHttpMethodOverride()
         {
             // Fake the request method to being POST and override it
@@ -893,14 +937,14 @@ namespace {
 
             $this->assertEquals(
                 'PUT',
-                $method->invoke(new \Bramus\Router\Router())
+                $method->invoke(self::getRouterInstance())
             );
         }
 
         public function testControllerMethodReturningFalse()
         {
             // Create Router
-            $router = new \Bramus\Router\Router();
+            $router = self::getRouterInstance();
             $router->get('/false', 'RouterTestController@returnFalse');
             $router->get('/static-false', 'RouterTestController@staticReturnFalse');
 
@@ -954,6 +998,16 @@ namespace Hello {
             echo $id;
         }
     }
+}
+
+namespace Hello\Folder {
+  class HelloFolderRouterTestController
+  {
+      public function show($id)
+      {
+          echo $id;
+      }
+  }
 }
 
 // EOF
